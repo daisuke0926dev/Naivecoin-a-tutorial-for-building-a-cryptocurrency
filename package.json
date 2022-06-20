@@ -1,0 +1,28 @@
+{
+  "name": "naivecoin-a-tutorial-for-building-a-cryptocurrency",
+  "version": "1.0.0",
+  "description": "https://lhartikk.github.io/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daisuke0926dev/Naivecoin-a-tutorial-for-building-a-cryptocurrency.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daisuke0926dev/Naivecoin-a-tutorial-for-building-a-cryptocurrency/issues"
+  },
+  "homepage": "https://github.com/daisuke0926dev/Naivecoin-a-tutorial-for-building-a-cryptocurrency#readme",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "express": "^4.18.1",
+    "typescript": "^4.7.4",
+    "ws": "^8.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  }
+}
