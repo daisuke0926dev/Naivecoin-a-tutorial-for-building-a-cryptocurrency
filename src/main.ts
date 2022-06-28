@@ -15,9 +15,6 @@ const initHttpServer = (myHeepPort: number ) => {
         res.send(getBlockchain());
     });
     app.post('/mineBlock', (req,res) => {
-        res.send(getBlockchain());
-    });
-    app.get('/peers', (req, res) => {
         const newBlock: Block = generateNextBlock(req.body.data);
         res.send(newBlock);
     });
