@@ -159,7 +159,10 @@ const hashMatchesBlocContent = (block: Block): boolean => {
 };
 
 const hashMachesDifficulty = (hash: string, difficulty: number): boolean => {
-    const hashInBinary: string = hexToBinary(hash);
+    const hashInBinary: string|null = hexToBinary(hash);
+    if(hashInBinary === null) {
+        return false;
+    }
     const requiredPrefix: string = '0'.repeat(difficulty);
     return hashInBinary.startsWith(requiredPrefix);
 };
