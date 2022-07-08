@@ -6,8 +6,8 @@ const sockets: WebSocket[] = [];
 
 enum MessageType {
     QUERY_LATEST = 0,
-    QUARY_ALL = 1,
-    RESPONSE_BLOCKCHAIN = 2.
+    QUERY_ALL = 1,
+    RESPONSE_BLOCKCHAIN = 2,
 }
 
 class Message {
@@ -16,11 +16,11 @@ class Message {
 }
 
 const initP2PServer = (p2pPort: number) => {
-    const server: Server = new WebSocket.Serber({port: p2pPort});
+    const server: Server = new WebSocket.Server({port: p2pPort});
     server.on('connection', (ws: WebSocket) => {
         initConnection(ws);
     });
-    console.log('listening websocket p2p port on:' + p2pPort);
+    console.log('listening websocket p2p port on: ' + p2pPort);
 };
 
 const getSockets = () => sockets;
@@ -53,28 +53,28 @@ const initMessageHandler = (ws: WebSocket) => {
             case MessageType.QUERY_LATEST:
                 write(ws, responseLatestMsg());
                 break;
-            case MessageType.QUARY_ALL:
+            case MessageType.QUERY_ALL:
                 write(ws, responseChainMsg());
                 break;
             case MessageType.RESPONSE_BLOCKCHAIN:
                 const receivedBlocks: Block[]|null = JSONToObject<Block[]>(message.data);
                 if(receivedBlocks === null) {
                     console.log('invalid blocks received:');
-                    console.log(message.data);
+                    console.log(message.data)
                     break;
                 }
                 handleBlockchainResponse(receivedBlocks);
                 break;
-            }
+        }
     });
 };
 
 const write = (ws: WebSocket, message: Message): void => ws.send(JSON.stringify(message));
 const broadcast = (message: Message): void => sockets.forEach((socket) => write(socket, message));
 
-const queryChainLengthMsg = (): Message => ({'type': MessageType.QUERY_LATEST, 'data':null});
+const queryChainLengthMsg = (): Message => ({'type': MessageType.QUERY_LATEST, 'data': null});
 
-const quieryAllMsg = (): Message => ({'type': MessageType.QUARY_ALL, 'data':null});
+const queryAllMsg = (): Message => ({'type': MessageType.QUERY_ALL, 'data': null});
 
 const responseChainMsg = (): Message => ({
     'type': MessageType.RESPONSE_BLOCKCHAIN, 'data': JSON.stringify(getBlockchain())
@@ -96,25 +96,25 @@ const initErrorHandler = (ws: WebSocket) => {
 
 const handleBlockchainResponse = (receivedBlocks: Block[]) => {
     if (receivedBlocks.length === 0) {
-        console.log('receoved block chain size of 0');
+        console.log('received block chain size of 0');
         return;
     }
     const latestBlockReceived: Block = receivedBlocks[receivedBlocks.length - 1];
     if (!isValidBlockStructure(latestBlockReceived)) {
-        console.log('block structure not valid');
+        console.log('block structuture not valid');
         return;
     }
     const latestBlockHeld: Block = getLatestBlock();
     if (latestBlockReceived.index > latestBlockHeld.index) {
         console.log('blockchain possibly behind. We got: '
-            + latestBlockHeld.index + 'Peer got: ' + latestBlockReceived.index);
+            + latestBlockHeld.index + ' Peer got: ' + latestBlockReceived.index);
         if (latestBlockHeld.hash === latestBlockReceived.previousHash) {
             if (addBlockToChain(latestBlockReceived)) {
                 broadcast(responseLatestMsg());
             }
         } else if (receivedBlocks.length === 1) {
             console.log('We have to query the chain from our peer');
-            broadcast(quieryAllMsg());
+            broadcast(queryAllMsg());
         } else {
             console.log('Received blockchain is longer than current blockchain');
             replaceChain(receivedBlocks);
@@ -128,7 +128,7 @@ const broadcastLatest = (): void => {
     broadcast(responseLatestMsg());
 };
 
-const connectToPeers =  (newPeer: string): void => {
+const connectToPeers = (newPeer: string): void => {
     const ws: WebSocket = new WebSocket(newPeer);
     ws.on('open', () => {
         initConnection(ws);
@@ -138,4 +138,4 @@ const connectToPeers =  (newPeer: string): void => {
     });
 };
 
-export { connectToPeers, broadcastLatest, initP2PServer, getSockets};
+export {connectToPeers, broadcastLatest, initP2PServer, getSockets};
