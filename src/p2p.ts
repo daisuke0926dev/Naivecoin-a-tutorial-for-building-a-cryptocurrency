@@ -32,7 +32,7 @@ const initConnection = (ws: WebSocket) => {
     write(ws, queryChainLengthMsg());
 };
 
-const JSONToObject = <T>(data: string): T=> {
+const JSONToObject = <T>(data: string): T|null=> {
     try{
         return JSON.parse(data);
     } catch (e) {
@@ -43,7 +43,7 @@ const JSONToObject = <T>(data: string): T=> {
 
 const initMessageHandler = (ws: WebSocket) => {
     ws.on('message', (data: string) => {
-        const message: Message = JSONToObject<Message>(data);
+        const message: Message|null = JSONToObject<Message>(data);
         if(message === null) {
             console.log('could not parse received JSON message:' + data);
             return;
@@ -57,7 +57,7 @@ const initMessageHandler = (ws: WebSocket) => {
                 write(ws, responseChainMsg());
                 break;
             case MessageType.RESPONSE_BLOCKCHAIN:
-                const receivedBlocks: Block[] = JSONToObject<Block[]>(message.data);
+                const receivedBlocks: Block[]|null = JSONToObject<Block[]>(message.data);
                 if(receivedBlocks === null) {
                     console.log('invalid blocks received:');
                     console.log(message.data);

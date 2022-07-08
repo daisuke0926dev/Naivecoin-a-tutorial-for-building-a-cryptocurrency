@@ -4,8 +4,24 @@ import * as express from 'express';
 import {Block, generateNextBlock, getBlockchain} from './blockchain';
 import {connectToPeers, getSockets, initP2PServer} from './p2p';
 
-const httpPort: number = parseInt(process.env.HTTP_PORT) || 3001;
-const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
+
+const serchHttpPort = () => {
+    if (process.env.HTTP_PORT === undefined) {
+        return 3001;
+    } else {
+        return parseInt(process.env.HTTP_PORT, 10);
+    }
+};
+const httpPort = serchHttpPort();
+
+const setrchP2pPort = () => {
+    if (process.env.P2P_PORT === undefined) {
+        return 6001;
+    } else {
+        return parseInt(process.env.P2P_PORT, 10);
+    }
+}
+const p2pPort = setrchP2pPort();
 
 const initHttpServer = (myHeepPort: number ) => {
     const app = express();

@@ -1,4 +1,4 @@
-const hexToBinary = (s: string): string => {
+const hexToBinary = (s: string): string|null => {
     let ret: string = '';
     const lookupTable = {
         '0': '0000', '1': '0001', '2': '0010', '3': '0011', '4': '0100',
